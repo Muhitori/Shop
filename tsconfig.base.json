@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"baseUrl": "./",
+		"paths": {
+			"@client": ["./apps/server/src/main.ts"],
+			"@server": ["./apps/client/src/index.html"]
+		}
+	}
+}
