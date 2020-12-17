@@ -1,9 +1,12 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: 'tsconfig.base.json',
-    tsconfigRootDir: __dirname,
-    sourceType: 'module'
+    ecmaVersion: 2020,
+    sourceType: 'module',
+    warnOnUnsupportedTypeScriptVersion: false,
+    loggerFn: () => {
+      // Override logger function with noop, to avoid unsupported typescript version warnings.
+    }
   },
   plugins: ['@typescript-eslint', 'prettier', 'standard', 'jest'],
   extends: [
@@ -14,7 +17,6 @@ module.exports = {
     'standard',
     'prettier',
     'prettier/@typescript-eslint',
-    'plugin:react/recommended',
     'prettier/standard',
     'prettier-standard/lib/base',
     'plugin:jest/recommended'
@@ -25,10 +27,6 @@ module.exports = {
     jest: true
   },
   rules: {
-    '@typescript-eslint/interface-name-prefix': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
     'prettier/prettier': [
       'error',
       {
@@ -40,8 +38,20 @@ module.exports = {
         trailingComma: 'none',
         jsxBracketSameLine: false,
         endOfLine: 'auto',
-        'space-before-function-paren': 'off'
       }
-    ]
+    ],
+    '@typescript-eslint/interface-name-prefix': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    'space-before-function-paren': [
+      'error',
+      {
+        anonymous: 'never',
+        named: 'never',
+        asyncArrow: 'always'
+      }
+    ],
+    'no-useless-constructor': 'off'
   }
 }
