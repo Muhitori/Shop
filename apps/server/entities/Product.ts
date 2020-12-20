@@ -3,11 +3,15 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
 import { Category } from './Category'
+import { Order } from './Order'
+import { OrderedProduct } from './OrderedProduct'
 import { Price } from './Price'
 
 @Entity('Products')
@@ -16,12 +20,12 @@ export class Product {
   public id: string
 
   @Column('varchar')
-  public title: string
+  public name: string
 
   @Column('varchar')
   public description: string
 
-  @Column('double')
+  @Column('double precision')
   public rating: number
 
   @Column('uuid')
@@ -44,4 +48,10 @@ export class Product {
 
   @ManyToOne(() => Product, (product) => product.price)
   public price: Price
+
+  @OneToMany(() => Product, (product) => product.orderedProducts)
+  public orderedProducts: OrderedProduct[]
+
+  @ManyToMany(() => Product, (product) => product.orders)
+  public orders: Order[]
 }

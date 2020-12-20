@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
@@ -14,10 +15,10 @@ export class Category {
   public id: string
 
   @Column('varchar')
-  public title: string
+  public name: string
 
   @Column('uuid')
-  public previousCategoryId: string
+  public parentCategoryId: string
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
   public createdAt: Date
@@ -28,6 +29,17 @@ export class Category {
   @DeleteDateColumn({ type: 'timestamp with time zone' })
   public deletedAt: Date
 
-  @ManyToOne(() => Category, (category) => category.previous)
-  public previous: Category
+  @ManyToOne(() => Category, (category) => category.parent)
+  public parent: Category
+
+  @OneToMany(() => Category, (category) => category.heirs)
+  public heirs: Category[]
+
+  public hasChild(): boolean {
+    return this.heirs.length > 0
+  }
+
+  public hasParent(): boolean {
+    return !!this.parentCategoryId
+  }
 }

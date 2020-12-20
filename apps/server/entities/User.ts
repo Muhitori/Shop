@@ -25,6 +25,9 @@ export class User {
   @Column('varchar')
   public password: string
 
+  @Column('date')
+  public birthDate: Date
+
   @Column('varchar')
   public avatar: string
 

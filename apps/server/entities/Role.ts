@@ -7,7 +7,7 @@ import {
   UpdateDateColumn
 } from 'typeorm'
 
-@Entity('Countries')
+@Entity('Roles')
 export class Role {
   @PrimaryGeneratedColumn('uuid')
   public id: string

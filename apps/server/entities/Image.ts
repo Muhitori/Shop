@@ -15,7 +15,7 @@ export class Image {
   public id: string
 
   @Column('varchar')
-  public image: string
+  public url: string
 
   @Column('uuid')
   public productId: string

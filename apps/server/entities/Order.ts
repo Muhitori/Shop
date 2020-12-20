@@ -3,11 +3,14 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
 import { OrderedProduct } from './OrderedProduct'
+import { Product } from './Product'
 import { User } from './User'
 
 @Entity('Orders')
@@ -18,9 +21,6 @@ export class Order {
   @Column('uuid')
   public userId: string
 
-  @Column('uuid')
-  public orderedProductId: string
-
   @CreateDateColumn({ type: 'timestamp with time zone' })
   public createdAt: Date
 
@@ -30,9 +30,12 @@ export class Order {
   @DeleteDateColumn({ type: 'timestamp with time zone' })
   public deletedAt: Date
 
-  @ManyToOne(() => Order, (order) => order.orderedProduct)
-  public orderedProduct: OrderedProduct
+  @OneToMany(() => Order, (order) => order.orderedProducts)
+  public orderedProducts: OrderedProduct[]
 
   @ManyToOne(() => Order, (order) => order.user)
   public user: User
+
+  @ManyToMany(() => Order, (order) => order.products)
+  public products: Product[]
 }

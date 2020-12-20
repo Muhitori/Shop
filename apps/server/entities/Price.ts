@@ -14,7 +14,7 @@ export class Price {
   @PrimaryGeneratedColumn('uuid')
   public id: string
 
-  @Column('double')
+  @Column('double precision')
   public value: number
 
   @Column('int')

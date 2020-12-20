@@ -18,7 +18,7 @@ export class Comment {
   @Column('varchar')
   public text: string
 
-  @Column('double')
+  @Column('int')
   public rating: string
 
   @Column('uuid')
