@@ -30,12 +30,12 @@ export class Order {
   @DeleteDateColumn({ type: 'timestamp with time zone' })
   public deletedAt: Date
 
-  @OneToMany(() => Order, (order) => order.orderedProducts)
+  @OneToMany(() => OrderedProduct, (orderedProduct) => orderedProduct.order)
   public orderedProducts: OrderedProduct[]
 
-  @ManyToOne(() => Order, (order) => order.user)
+  @ManyToOne(() => User, (user) => user.orders)
   public user: User
 
-  @ManyToMany(() => Order, (order) => order.products)
+  @ManyToMany(() => Product, (product) => product.orders)
   public products: Product[]
 }

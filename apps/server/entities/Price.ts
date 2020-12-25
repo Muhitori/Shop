@@ -4,10 +4,12 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
 import { Country } from './Country'
+import { Product } from './Product'
 
 @Entity('Prices')
 export class Price {
@@ -35,6 +37,9 @@ export class Price {
   @DeleteDateColumn({ type: 'timestamp with time zone' })
   public deletedAt: Date
 
-  @ManyToOne(() => Price, (price) => price.country)
+  @ManyToOne(() => Country, (country) => country.price)
   public country: Country
+
+  @OneToMany(() => Product, (product) => product.price)
+  public products: Product[]
 }

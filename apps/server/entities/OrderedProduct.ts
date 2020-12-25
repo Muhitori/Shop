@@ -30,9 +30,9 @@ export class OrderedProduct {
   @DeleteDateColumn({ type: 'timestamp with time zone' })
   public deletedAt: Date
 
-  @ManyToOne(() => OrderedProduct, (orderedProduct) => orderedProduct.product)
+  @ManyToOne(() => Product, (product) => product.orderedProducts)
   public product: Product
 
-  @ManyToOne(() => OrderedProduct, (orderedProduct) => orderedProduct.order)
+  @ManyToOne(() => Order, (order) => order.orderedProducts)
   public order: Order
 }

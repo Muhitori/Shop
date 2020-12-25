@@ -3,9 +3,11 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
+import { User } from './User'
 
 @Entity('Roles')
 export class Role {
@@ -23,4 +25,7 @@ export class Role {
 
   @DeleteDateColumn({ type: 'timestamp with time zone' })
   public deletedAt: Date
+
+  @OneToMany(() => User, (user) => user.role)
+  public users: User[]
 }

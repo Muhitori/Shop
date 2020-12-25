@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
+import { Product } from './Product'
 
 @Entity('Categories')
 export class Category {
@@ -34,6 +35,9 @@ export class Category {
 
   @OneToMany(() => Category, (category) => category.heirs)
   public heirs: Category[]
+
+  @OneToMany(() => Product, (product) => product.category)
+  public products: Product[]
 
   public hasChild(): boolean {
     return this.heirs.length > 0

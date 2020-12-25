@@ -4,12 +4,15 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
 import * as bcrypt from 'bcryptjs'
 import { Country } from './Country'
 import { Role } from './Role'
+import { Order } from './Order'
+import { Comment } from './Comment'
 
 @Entity('Users')
 export class User {
@@ -46,11 +49,17 @@ export class User {
   @DeleteDateColumn({ type: 'timestamp with time zone' })
   public deletedAt: Date
 
-  @ManyToOne(() => User, (user) => user.country)
+  @ManyToOne(() => Country, (country) => country.users)
   public country: Country
 
-  @ManyToOne(() => User, (user) => user.role)
+  @ManyToOne(() => Role, (role) => role.users)
   public role: Role
+
+  @OneToMany(() => Order, (order) => order.user)
+  public orders: Order[]
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  public comments: Comment[]
 
   constructor(
     email: string,

@@ -36,9 +36,9 @@ export class Comment {
   @DeleteDateColumn({ type: 'timestamp with time zone' })
   public deletedAt: Date
 
-  @ManyToOne(() => Comment, (comment) => comment.user)
+  @ManyToOne(() => User, (user) => user.comments)
   public user: User
 
-  @ManyToOne(() => Comment, (comment) => comment.product)
+  @ManyToOne(() => Product, (product) => product.comments)
   public product: Product
 }

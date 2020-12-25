@@ -29,6 +29,6 @@ export class Image {
   @DeleteDateColumn({ type: 'timestamp with time zone' })
   public deletedAt: Date
 
-  @ManyToOne(() => Image, (image) => image.product)
+  @ManyToOne(() => Product, (product) => product.images)
   public product: Product
 }
