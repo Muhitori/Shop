@@ -40,8 +40,8 @@ export class RoleMigration20201210235630 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      'INSERT INTO $1("id", "name") VALUES (DEFAULT, $2), (DEFAULT, $3), (DEFAULT, $4), (DEFAULT, $5);',
-      [this.tableName, 'Guest', 'User', 'Seller', 'Admin']
+      'INSERT INTO "Roles"("id", "name") VALUES (DEFAULT, $1), (DEFAULT, $2), (DEFAULT, $3), (DEFAULT, $4);',
+      ['Guest', 'User', 'Seller', 'Admin']
     )
   }
 

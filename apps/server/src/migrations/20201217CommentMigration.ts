@@ -97,9 +97,9 @@ export class CommentMigration20201217235637 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      `INSERT INTO $1 ("text", "rating", "productId", "userId")
-      VALUES ($2, $3, $4, $5);`,
-      [this.tableName, 'test comment', 4, product.id, user.id]
+      `INSERT INTO "Comments" ("text", "rating", "productId", "userId")
+      VALUES ($1, $2, $3, $4);`,
+      ['test comment', 4, product.id, user.id]
     )
   }
 

@@ -47,20 +47,20 @@ export class CategoryMigration20201213235633 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      'INSERT INTO $1("id", "name") VALUES (DEFAULT, $2);',
-      [this.tableName, 'Product']
+      'INSERT INTO "Categories"("id", "name") VALUES (DEFAULT, $1);',
+      ['Product']
     )
 
     const [
       { id }
     ]: Category[] = await queryRunner.query(
-      'SELECT id FROM $1 WHERE name = $2',
-      [this.tableName, 'Product']
+      'SELECT id FROM "Categories" WHERE name = $1',
+      ['Product']
     )
 
     await queryRunner.query(
-      'INSERT INTO $1("id", "name", "parentCategoryId") VALUES (DEFAULT, $2, $3);',
-      [this.tableName, 'ProductSubCategory', id]
+      'INSERT INTO "Categories"("id", "name", "parentCategoryId") VALUES (DEFAULT, $1, $2);',
+      ['ProductSubCategory', id]
     )
   }
 

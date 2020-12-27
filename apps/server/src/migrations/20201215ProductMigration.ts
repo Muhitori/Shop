@@ -104,9 +104,9 @@ export class ProductMigration20201215235635 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      `INSERT INTO $1 ("name", "description", "rating", "priceId", "categoryId")
-      VALUES ($2, $3, $4, $5, $6);`,
-      [this.tableName, 'test', 'test description', 4.5, price.id, category.id]
+      `INSERT INTO "Products" ("name", "description", "rating", "priceId", "categoryId")
+      VALUES ($1, $2, $3, $4, $5);`,
+      ['test', 'test description', 4.5, price.id, category.id]
     )
   }
 

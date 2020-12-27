@@ -68,9 +68,8 @@ export class ImageMigration20201216235636 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      'INSERT INTO $1("id", "url", "productId") VALUES (DEFAULT, $2, $3);',
+      'INSERT INTO "Images"("id", "url", "productId") VALUES (DEFAULT, $1, $2);',
       [
-        this.tableName,
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNGYBq9sbINiYagdSRKn4wQVufUF-7FbllYA&usqp=CAU',
         id
       ]

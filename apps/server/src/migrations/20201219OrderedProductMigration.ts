@@ -97,9 +97,9 @@ export class OrderedProductMigration20201219235639 implements MigrationInterface
     )
 
     await queryRunner.query(
-      `INSERT INTO $1 ("id", "count", "orderId", "productId")
-      VALUES (DEFAULT, $2, $3, $4);`,
-      [this.tableName, 2, order.id, product.id]
+      `INSERT INTO "OrderedProducts" ("id", "count", "orderId", "productId")
+      VALUES (DEFAULT, $1, $2, $3);`,
+      [2, order.id, product.id]
     )
   }
 

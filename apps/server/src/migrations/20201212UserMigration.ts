@@ -116,9 +116,9 @@ export class UserMigration20201212235632 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      `INSERT INTO $1 ("email", "username", "password", "birthDate", "avatar", "roleId", "countryId")
-      VALUES ($2, $3, $4, $5, $6, $7, $8);`,
-      [this.tableName, 'admin@ad.min', 'admin', 'admin', new Date(), null, role.id, country.id]
+      `INSERT INTO "Users" ("email", "username", "password", "birthDate", "avatar", "roleId", "countryId")
+      VALUES ($1, $2, $3, $4, $5, $6, $7);`,
+      ['admin@ad.min', 'admin', 'admin', new Date(), null, role.id, country.id]
     )
   }
 

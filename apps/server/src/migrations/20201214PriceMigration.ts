@@ -78,8 +78,8 @@ export class PriceMigration20201214235634 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      'INSERT INTO $1("id", "value", "discount", "currency", "countryId") VALUES (DEFAULT, $2, $3, $4, $5);',
-      [this.tableName, 100, 0, 'Dollar', id]
+      'INSERT INTO "Prices"("id", "value", "discount", "currency", "countryId") VALUES (DEFAULT, $1, $2, $3, $4);',
+      [100, 0, 'Dollar', id]
     )
   }
 

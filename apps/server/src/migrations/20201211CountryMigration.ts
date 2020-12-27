@@ -40,8 +40,8 @@ export class CountryMigration20201211235631 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      'INSERT INTO $1("id", "name") VALUES (DEFAULT, $2), (DEFAULT, $3), (DEFAULT, $4);',
-      [this.tableName, 'Ukraine', 'Russia', 'USA']
+      'INSERT INTO "Countries"("id", "name") VALUES (DEFAULT, $1), (DEFAULT, $2), (DEFAULT, $3);',
+      ['Ukraine', 'Russia', 'USA']
     )
   }
 

@@ -62,8 +62,8 @@ export class OrderMigration20201218235638 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      'INSERT INTO $1 ("id", "userId") VALUES (DEFAULT, $2);',
-      [this.tableName, id]
+      'INSERT INTO "Orders" ("id", "userId") VALUES (DEFAULT, $1);',
+      [id]
     )
   }
 
