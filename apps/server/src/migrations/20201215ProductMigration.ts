@@ -7,11 +7,12 @@ import {
 import { Country } from '../entities/Country'
 import { Role } from '../entities/Role'
 
-export class CommentMigration20201217235637 implements MigrationInterface {
+export class ProductMigration20201215235635 implements MigrationInterface {
+  private tableName = "Products";
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'Comments',
+        name: this.tableName,
         columns: [
           {
             name: 'id',
@@ -20,7 +21,14 @@ export class CommentMigration20201217235637 implements MigrationInterface {
             isPrimary: true
           },
           {
-            name: 'text',
+            name: 'name',
+            type: 'varchar',
+            length: '255',
+            isUnique: true,
+            isNullable: false
+          },
+          {
+            name: 'description',
             type: 'varchar',
             length: '255',
             isUnique: true,
@@ -28,16 +36,16 @@ export class CommentMigration20201217235637 implements MigrationInterface {
           },
           {
             name: 'rating',
-            type: 'int',
+            type: 'double precision',
             isNullable: false
           },
           {
-            name: 'productId',
+            name: 'priceId',
             type: 'uuid',
             isNullable: false
           },
           {
-            name: 'userId',
+            name: 'categoryId',
             type: 'uuid',
             isNullable: false
           },
@@ -62,47 +70,47 @@ export class CommentMigration20201217235637 implements MigrationInterface {
     )
 
     await queryRunner.createForeignKey(
-      'Comments',
+      this.tableName,
       new TableForeignKey({
-        columnNames: ['productId'],
+        columnNames: ['priceId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'Products',
+        referencedTableName: 'Prices',
         onDelete: 'CASCADE'
       })
     )
 
     await queryRunner.createForeignKey(
-      'Comments',
+      this.tableName,
       new TableForeignKey({
-        columnNames: ['userId'],
+        columnNames: ['categoryId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'Users',
+        referencedTableName: 'Categories',
         onDelete: 'CASCADE'
       })
     )
 
     const [
-      product
-    ]: Role[] = await queryRunner.query(
-      'SELECT * FROM "Products" WHERE name = $1',
-      ['test']
+      price
+    ]: Country[] = await queryRunner.query(
+      'SELECT * FROM "Prices" WHERE value = $1',
+      [100]
     )
 
     const [
-      user
-    ]: Country[] = await queryRunner.query(
-      'SELECT * FROM "Users" WHERE username = $1',
-      ['admin']
+      category
+    ]: Role[] = await queryRunner.query(
+      'SELECT * FROM "Categories" WHERE name = $1',
+      ['ProductSubCategory']
     )
 
     await queryRunner.query(
-      `INSERT INTO "Comments" ("text", "rating", "productId", "userId")
-      VALUES ($1, $2, $3, $4);`,
-      ['test comment', 4, product.id, user.id]
+      `INSERT INTO $1 ("name", "description", "rating", "priceId", "categoryId")
+      VALUES ($2, $3, $4, $5, $6);`,
+      [this.tableName, 'test', 'test description', 4.5, price.id, category.id]
     )
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('Comments')
+    await queryRunner.dropTable(this.tableName)
   }
 }

@@ -13,7 +13,7 @@
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2016", "dom"],
     "module": "commonjs",
-    "outDir": "../../dist/out-tsc/apps/server"
+    "outDir": "./dist"
   },
   "extends": "../../tsconfig.base.json",
   "include": ["src/**/*.ts"],

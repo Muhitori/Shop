@@ -8,10 +8,11 @@ import { Country } from '../entities/Country'
 import { Role } from '../entities/Role'
 
 export class UserMigration20201212235632 implements MigrationInterface {
+  private tableName = "Users";
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'Users',
+        name: this.tableName,
         columns: [
           {
             name: 'id',
@@ -81,7 +82,7 @@ export class UserMigration20201212235632 implements MigrationInterface {
     )
 
     await queryRunner.createForeignKey(
-      'Users',
+      this.tableName,
       new TableForeignKey({
         columnNames: ['countryId'],
         referencedColumnNames: ['id'],
@@ -91,7 +92,7 @@ export class UserMigration20201212235632 implements MigrationInterface {
     )
 
     await queryRunner.createForeignKey(
-      'Users',
+      this.tableName,
       new TableForeignKey({
         columnNames: ['roleId'],
         referencedColumnNames: ['id'],
@@ -115,13 +116,13 @@ export class UserMigration20201212235632 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      `INSERT INTO "Users" ("email", "username", "password", "birthDate", "avatar", "roleId", "countryId")
-      VALUES ($1, $2, $3, $4, $5, $6, $7);`,
-      ['admin@ad.min', 'admin', 'admin', new Date(), null, role.id, country.id]
+      `INSERT INTO $1 ("email", "username", "password", "birthDate", "avatar", "roleId", "countryId")
+      VALUES ($2, $3, $4, $5, $6, $7, $8);`,
+      [this.tableName, 'admin@ad.min', 'admin', 'admin', new Date(), null, role.id, country.id]
     )
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('Users')
+    await queryRunner.dropTable(this.tableName)
   }
 }

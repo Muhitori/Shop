@@ -4,14 +4,14 @@ import {
   Table,
   TableForeignKey
 } from 'typeorm'
-import { User } from '../entities/User'
+import { Product } from '../entities/Product'
 
-// eslint-disable-next-line prettier/prettier
-export class OrderedProductMigration20201219235639 implements MigrationInterface {
+export class ImageMigration20201216235636 implements MigrationInterface {
+  private tableName = "Images";
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'OrderedProducts',
+        name: this.tableName,
         columns: [
           {
             name: 'id',
@@ -20,13 +20,9 @@ export class OrderedProductMigration20201219235639 implements MigrationInterface
             isPrimary: true
           },
           {
-            name: 'count',
-            type: 'int',
-            isNullable: false
-          },
-          {
-            name: 'orderId',
-            type: 'uuid',
+            name: 'url',
+            type: 'varchar',
+            length: '255',
             isNullable: false
           },
           {
@@ -55,17 +51,7 @@ export class OrderedProductMigration20201219235639 implements MigrationInterface
     )
 
     await queryRunner.createForeignKey(
-      'OrderedProducts',
-      new TableForeignKey({
-        columnNames: ['orderId'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'Orders',
-        onDelete: 'CASCADE'
-      })
-    )
-
-    await queryRunner.createForeignKey(
-      'OrderedProducts',
+      this.tableName,
       new TableForeignKey({
         columnNames: ['productId'],
         referencedColumnNames: ['id'],
@@ -75,34 +61,23 @@ export class OrderedProductMigration20201219235639 implements MigrationInterface
     )
 
     const [
-      user
-    ]: User[] = await queryRunner.query(
-      'SELECT * FROM "Users" WHERE username = $1',
-      ['admin']
-    )
-
-    const [
-      order
-    ]: User[] = await queryRunner.query(
-      'SELECT * FROM "Orders" WHERE "userId" = $1',
-      [user.id]
-    )
-
-    const [
-      product
-    ]: User[] = await queryRunner.query(
-      'SELECT * FROM "Products" WHERE name = $1',
+      { id }
+    ]: Product[] = await queryRunner.query(
+      'SELECT id FROM "Products" WHERE name = $1',
       ['test']
     )
 
     await queryRunner.query(
-      `INSERT INTO "OrderedProducts" ("id", "count", "orderId", "productId")
-      VALUES (DEFAULT, $1, $2, $3);`,
-      [1, order.id, product.id]
+      'INSERT INTO $1("id", "url", "productId") VALUES (DEFAULT, $2, $3);',
+      [
+        this.tableName,
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNGYBq9sbINiYagdSRKn4wQVufUF-7FbllYA&usqp=CAU',
+        id
+      ]
     )
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('OrderedProducts')
+    await queryRunner.dropTable(this.tableName)
   }
 }

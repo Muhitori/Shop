@@ -1,13 +1,12 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const envConfig = require('./config/envConfig')
+const envConfig = require('./src/config/envConfig')
 
 module.exports = {
   ...envConfig(),
   synchronize: false,
-  entities: ['./entities/*'],
-  migrations: ['./migrations/*'],
+  entities: ['./dist/entities/*'],
+  migrations: ['./dist/migrations/*'],
   cli: {
-    entitiesDir: '**/server/entities',
-    migrationsDir: '**/server/migrations'
+    entitiesDir: './src/entities',
+    migrationsDir: './src/migrations'
   }
 }

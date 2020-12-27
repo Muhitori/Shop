@@ -4,14 +4,15 @@ import {
   Table,
   TableForeignKey
 } from 'typeorm'
-import { Country } from '../entities/Country'
-import { Role } from '../entities/Role'
+import { User } from '../entities/User'
 
-export class ProductMigration20201215235635 implements MigrationInterface {
+
+export class OrderedProductMigration20201219235639 implements MigrationInterface {
+  private tableName = "OrderedProducts";
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'Products',
+        name: this.tableName,
         columns: [
           {
             name: 'id',
@@ -20,31 +21,17 @@ export class ProductMigration20201215235635 implements MigrationInterface {
             isPrimary: true
           },
           {
-            name: 'name',
-            type: 'varchar',
-            length: '255',
-            isUnique: true,
+            name: 'count',
+            type: 'int',
             isNullable: false
           },
           {
-            name: 'description',
-            type: 'varchar',
-            length: '255',
-            isUnique: true,
-            isNullable: false
-          },
-          {
-            name: 'rating',
-            type: 'double precision',
-            isNullable: false
-          },
-          {
-            name: 'priceId',
+            name: 'orderId',
             type: 'uuid',
             isNullable: false
           },
           {
-            name: 'categoryId',
+            name: 'productId',
             type: 'uuid',
             isNullable: false
           },
@@ -69,47 +56,54 @@ export class ProductMigration20201215235635 implements MigrationInterface {
     )
 
     await queryRunner.createForeignKey(
-      'Products',
+      this.tableName,
       new TableForeignKey({
-        columnNames: ['priceId'],
+        columnNames: ['orderId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'Prices',
+        referencedTableName: 'Orders',
         onDelete: 'CASCADE'
       })
     )
 
     await queryRunner.createForeignKey(
-      'Products',
+      this.tableName,
       new TableForeignKey({
-        columnNames: ['categoryId'],
+        columnNames: ['productId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'Categories',
+        referencedTableName: 'Products',
         onDelete: 'CASCADE'
       })
     )
 
     const [
-      price
-    ]: Country[] = await queryRunner.query(
-      'SELECT * FROM "Prices" WHERE value = $1',
-      [100]
+      user
+    ]: User[] = await queryRunner.query(
+      'SELECT * FROM "Users" WHERE username = $1',
+      ['admin']
     )
 
     const [
-      category
-    ]: Role[] = await queryRunner.query(
-      'SELECT * FROM "Categories" WHERE name = $1',
-      ['ProductSubCategory']
+      order
+    ]: User[] = await queryRunner.query(
+      'SELECT * FROM "Orders" WHERE "userId" = $1',
+      [user.id]
+    )
+
+    const [
+      product
+    ]: User[] = await queryRunner.query(
+      'SELECT * FROM "Products" WHERE name = $1',
+      ['test']
     )
 
     await queryRunner.query(
-      `INSERT INTO "Products" ("name", "description", "rating", "priceId", "categoryId")
-      VALUES ($1, $2, $3, $4, $5);`,
-      ['test', 'test description', 4.5, price.id, category.id]
+      `INSERT INTO $1 ("id", "count", "orderId", "productId")
+      VALUES (DEFAULT, $2, $3, $4);`,
+      [this.tableName, 2, order.id, product.id]
     )
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('Products')
+    await queryRunner.dropTable(this.tableName)
   }
 }

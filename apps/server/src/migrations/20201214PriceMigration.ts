@@ -4,13 +4,14 @@ import {
   Table,
   TableForeignKey
 } from 'typeorm'
-import { Product } from '../entities/Product'
+import { Country } from '../entities/Country'
 
-export class ImageMigration20201216235636 implements MigrationInterface {
+export class PriceMigration20201214235634 implements MigrationInterface {
+  private tableName = "Prices";
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'Images',
+        name: this.tableName,
         columns: [
           {
             name: 'id',
@@ -19,13 +20,23 @@ export class ImageMigration20201216235636 implements MigrationInterface {
             isPrimary: true
           },
           {
-            name: 'url',
+            name: 'value',
+            type: 'double precision',
+            isNullable: false
+          },
+          {
+            name: 'discount',
+            type: 'int',
+            isNullable: true
+          },
+          {
+            name: 'currency',
             type: 'varchar',
             length: '255',
             isNullable: false
           },
           {
-            name: 'productId',
+            name: 'countryId',
             type: 'uuid',
             isNullable: false
           },
@@ -50,32 +61,29 @@ export class ImageMigration20201216235636 implements MigrationInterface {
     )
 
     await queryRunner.createForeignKey(
-      'Images',
+      this.tableName,
       new TableForeignKey({
-        columnNames: ['productId'],
+        columnNames: ['countryId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'Products',
+        referencedTableName: 'Countries',
         onDelete: 'CASCADE'
       })
     )
 
     const [
       { id }
-    ]: Product[] = await queryRunner.query(
-      'SELECT id FROM "Products" WHERE name = $1',
-      ['test']
+    ]: Country[] = await queryRunner.query(
+      'SELECT id FROM "Countries" WHERE name = $1',
+      ['Ukraine']
     )
 
     await queryRunner.query(
-      'INSERT INTO "Images"("id", "url", "productId") VALUES (DEFAULT, $1, $2);',
-      [
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNGYBq9sbINiYagdSRKn4wQVufUF-7FbllYA&usqp=CAU',
-        id
-      ]
+      'INSERT INTO $1("id", "value", "discount", "currency", "countryId") VALUES (DEFAULT, $2, $3, $4, $5);',
+      [this.tableName, 100, 0, 'Dollar', id]
     )
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('Images')
+    await queryRunner.dropTable(this.tableName)
   }
 }

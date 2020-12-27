@@ -1,10 +1,11 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 
-export class CountryMigration20201211235631 implements MigrationInterface {
+export class RoleMigration20201210235630 implements MigrationInterface {
+  private tableName = "Roles";
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'Countries',
+        name: this.tableName,
         columns: [
           {
             name: 'id',
@@ -39,12 +40,12 @@ export class CountryMigration20201211235631 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      'INSERT INTO "Countries"("id", "name") VALUES (DEFAULT, $1), (DEFAULT, $2), (DEFAULT, $3);',
-      ['Ukraine', 'Russia', 'USA']
+      'INSERT INTO $1("id", "name") VALUES (DEFAULT, $2), (DEFAULT, $3), (DEFAULT, $4), (DEFAULT, $5);',
+      [this.tableName, 'Guest', 'User', 'Seller', 'Admin']
     )
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('Countries')
+    await queryRunner.dropTable(this.tableName)
   }
 }

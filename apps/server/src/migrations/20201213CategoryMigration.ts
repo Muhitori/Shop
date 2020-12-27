@@ -1,10 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm'
+import { Category } from '../entities/Category'
 
-export class RoleMigration20201210235630 implements MigrationInterface {
+export class CategoryMigration20201213235633 implements MigrationInterface {
+  private tableName = "Categories";
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'Roles',
+        name: this.tableName,
         columns: [
           {
             name: 'id',
@@ -17,6 +19,12 @@ export class RoleMigration20201210235630 implements MigrationInterface {
             type: 'varchar',
             length: '255',
             isNullable: false
+          },
+          {
+            name: 'parentCategoryId',
+            type: 'varchar',
+            length: '255',
+            isNullable: true
           },
           {
             name: 'createdAt',
@@ -39,12 +47,24 @@ export class RoleMigration20201210235630 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      'INSERT INTO "Roles"("id", "name") VALUES (DEFAULT, $1), (DEFAULT, $2), (DEFAULT, $3), (DEFAULT, $4);',
-      ['Guest', 'User', 'Seller', 'Admin']
+      'INSERT INTO $1("id", "name") VALUES (DEFAULT, $2);',
+      [this.tableName, 'Product']
+    )
+
+    const [
+      { id }
+    ]: Category[] = await queryRunner.query(
+      'SELECT id FROM $1 WHERE name = $2',
+      [this.tableName, 'Product']
+    )
+
+    await queryRunner.query(
+      'INSERT INTO $1("id", "name", "parentCategoryId") VALUES (DEFAULT, $2, $3);',
+      [this.tableName, 'ProductSubCategory', id]
     )
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('Roles')
+    await queryRunner.dropTable(this.tableName)
   }
 }

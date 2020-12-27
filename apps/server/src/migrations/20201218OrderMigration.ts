@@ -7,10 +7,11 @@ import {
 import { User } from '../entities/User'
 
 export class OrderMigration20201218235638 implements MigrationInterface {
+  private tableName = "Orders";
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'Orders',
+        name: this.tableName,
         columns: [
           {
             name: 'id',
@@ -44,7 +45,7 @@ export class OrderMigration20201218235638 implements MigrationInterface {
     )
 
     await queryRunner.createForeignKey(
-      'Orders',
+      this.tableName,
       new TableForeignKey({
         columnNames: ['userId'],
         referencedColumnNames: ['id'],
@@ -61,12 +62,12 @@ export class OrderMigration20201218235638 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      'INSERT INTO "Orders" ("id", "userId") VALUES (DEFAULT, $1);',
-      [id]
+      'INSERT INTO $1 ("id", "userId") VALUES (DEFAULT, $2);',
+      [this.tableName, id]
     )
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('Orders')
+    await queryRunner.dropTable(this.tableName)
   }
 }

@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm'
-import { Category } from '../entities/Category'
 
-export class CategoryMigration20201213235633 implements MigrationInterface {
+export class CountryMigration20201211235631 implements MigrationInterface {
+  private tableName = "Countries";
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'Categories',
+        name: this.tableName,
         columns: [
           {
             name: 'id',
@@ -18,12 +18,6 @@ export class CategoryMigration20201213235633 implements MigrationInterface {
             type: 'varchar',
             length: '255',
             isNullable: false
-          },
-          {
-            name: 'parentCategoryId',
-            type: 'varchar',
-            length: '255',
-            isNullable: true
           },
           {
             name: 'createdAt',
@@ -46,24 +40,12 @@ export class CategoryMigration20201213235633 implements MigrationInterface {
     )
 
     await queryRunner.query(
-      'INSERT INTO "Categories"("id", "name") VALUES (DEFAULT, $1);',
-      ['Product']
-    )
-
-    const [
-      { id }
-    ]: Category[] = await queryRunner.query(
-      'SELECT id FROM "Categories" WHERE name = $1',
-      ['Product']
-    )
-
-    await queryRunner.query(
-      'INSERT INTO "Categories"("id", "name", "parentCategoryId") VALUES (DEFAULT, $1, $2);',
-      ['ProductSubCategory', id]
+      'INSERT INTO $1("id", "name") VALUES (DEFAULT, $2), (DEFAULT, $3), (DEFAULT, $4);',
+      [this.tableName, 'Ukraine', 'Russia', 'USA']
     )
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('Categories')
+    await queryRunner.dropTable(this.tableName)
   }
 }
