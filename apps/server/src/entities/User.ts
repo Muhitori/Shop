@@ -8,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import * as bcrypt from 'bcryptjs'
 import { Country } from './Country'
 import { Role } from './Role'
 import { Order } from './Order'
@@ -65,21 +64,15 @@ export class User {
     email: string,
     username: string,
     password: string,
+    birthDate: Date,
     countryId: string,
     roleId: string
   ) {
     this.email = email
     this.username = username
     this.password = password
+    this.birthDate = birthDate
     this.countryId = countryId
     this.roleId = roleId
-  }
-
-  hashPassword() {
-    this.password = bcrypt.hashSync(this.password, 2)
-  }
-
-  async unecryptedPasswordIsValid(password: string) {
-    return await bcrypt.compare(password, this.password)
   }
 }
