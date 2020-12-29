@@ -7,7 +7,7 @@ import {
 import { User } from '../entities/User'
 
 export class OrderMigration20201218235638 implements MigrationInterface {
-  private tableName = "Orders";
+  private tableName = 'Orders'
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({

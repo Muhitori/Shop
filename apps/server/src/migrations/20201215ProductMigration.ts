@@ -8,7 +8,7 @@ import { Country } from '../entities/Country'
 import { Role } from '../entities/Role'
 
 export class ProductMigration20201215235635 implements MigrationInterface {
-  private tableName = "Products";
+  private tableName = 'Products'
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({

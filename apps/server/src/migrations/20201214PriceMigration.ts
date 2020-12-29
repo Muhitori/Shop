@@ -7,7 +7,7 @@ import {
 import { Country } from '../entities/Country'
 
 export class PriceMigration20201214235634 implements MigrationInterface {
-  private tableName = "Prices";
+  private tableName = 'Prices'
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({

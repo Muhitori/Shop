@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 
 export class CountryMigration20201211235631 implements MigrationInterface {
-  private tableName = "Countries";
+  private tableName = 'Countries'
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({

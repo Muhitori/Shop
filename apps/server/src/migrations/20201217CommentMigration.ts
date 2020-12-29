@@ -8,7 +8,7 @@ import { Country } from '../entities/Country'
 import { Role } from '../entities/Role'
 
 export class CommentMigration20201217235637 implements MigrationInterface {
-  private tableName = "Comments";
+  private tableName = 'Comments'
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({

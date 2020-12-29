@@ -8,7 +8,7 @@ import { Country } from '../entities/Country'
 import { Role } from '../entities/Role'
 
 export class UserMigration20201212235632 implements MigrationInterface {
-  private tableName = "Users";
+  private tableName = 'Users'
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({

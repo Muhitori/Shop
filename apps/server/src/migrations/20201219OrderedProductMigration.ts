@@ -6,9 +6,9 @@ import {
 } from 'typeorm'
 import { User } from '../entities/User'
 
-
+// eslint-disable-next-line prettier/prettier
 export class OrderedProductMigration20201219235639 implements MigrationInterface {
-  private tableName = "OrderedProducts";
+  private tableName = 'OrderedProducts'
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({

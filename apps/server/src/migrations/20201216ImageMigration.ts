@@ -7,7 +7,7 @@ import {
 import { Product } from '../entities/Product'
 
 export class ImageMigration20201216235636 implements MigrationInterface {
-  private tableName = "Images";
+  private tableName = 'Images'
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
