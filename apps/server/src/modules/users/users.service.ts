@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import * as bcrypt from 'bcryptjs'
-import { User } from '../../entities/User'
+import { User } from '../../entities/user.entity'
 import { CountriesService } from '../countries/countries.service'
 import { RolesService } from '../roles/roles.service'
 import { AuthUserDto } from './dto/authUser.dto'
@@ -17,7 +16,7 @@ export class UsersService {
     private rolesService: RolesService
   ) {}
 
-  async getAllUsers(): Promise<UserDto[] | []> {
+  async getAll(): Promise<UserDto[] | []> {
     return this.userRepo.find({
       join: {
         alias: 'users',
@@ -35,7 +34,7 @@ export class UsersService {
       join: {
         alias: 'users',
         leftJoinAndSelect: {
-          role: 'users.role',
+          roles: 'users.roles',
           country: 'users.country'
         }
       }
@@ -48,34 +47,31 @@ export class UsersService {
       join: {
         alias: 'users',
         leftJoinAndSelect: {
-          role: 'users.role'
+          roles: 'users.roles'
         }
       }
     })
   }
 
-  async createUser(user: RegisterUserDto): Promise<AuthUserDto | null> {
+  async create(user: RegisterUserDto): Promise<AuthUserDto | null> {
     const country = await this.countriesService.getCountryByName(
       user.countryName
     )
-    const role = await this.rolesService.getRoleByName('User')
+
     const newUser: User = new User(
       user.email,
       user.username,
       user.password,
       user.birthDate,
-      country.id,
-      role.id
+      country.id
     )
-
-    newUser.password = this.hashPassword(newUser.password)
 
     await this.userRepo.insert(newUser)
 
     return this.getUserByEmail(user.email)
   }
 
-  hashPassword(password: string) {
-    return bcrypt.hashSync(password, 2)
+  async createMany(users: RegisterUserDto[]): Promise<any> {
+    return this.userRepo.insert(users)
   }
 }

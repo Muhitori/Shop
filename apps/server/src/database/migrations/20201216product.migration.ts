@@ -4,11 +4,11 @@ import {
   Table,
   TableForeignKey
 } from 'typeorm'
-import { Country } from '../entities/Country'
-import { Role } from '../entities/Role'
+import { Country } from '../../entities/country.entity'
+import { Role } from '../../entities/role.entity'
 
-export class UserMigration20201212235632 implements MigrationInterface {
-  private tableName = 'Users'
+export class ProductMigration20201216235635 implements MigrationInterface {
+  private tableName = 'Products'
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -21,43 +21,31 @@ export class UserMigration20201212235632 implements MigrationInterface {
             isPrimary: true
           },
           {
-            name: 'email',
+            name: 'name',
             type: 'varchar',
             length: '255',
             isUnique: true,
             isNullable: false
           },
           {
-            name: 'username',
+            name: 'description',
             type: 'varchar',
             length: '255',
             isUnique: true,
             isNullable: false
           },
           {
-            name: 'password',
-            type: 'varchar',
-            length: '255',
+            name: 'rating',
+            type: 'double precision',
             isNullable: false
           },
           {
-            name: 'birthDate',
-            type: 'timestamptz',
-            isNullable: false
-          },
-          {
-            name: 'avatar',
-            type: 'varchar',
-            length: '255',
-            isNullable: true
-          },
-          {
-            name: 'roleId',
+            name: 'priceId',
             type: 'uuid',
             isNullable: false
           },
           {
-            name: 'countryId',
+            name: 'categoryId',
             type: 'uuid',
             isNullable: false
           },
@@ -84,9 +72,9 @@ export class UserMigration20201212235632 implements MigrationInterface {
     await queryRunner.createForeignKey(
       this.tableName,
       new TableForeignKey({
-        columnNames: ['countryId'],
+        columnNames: ['priceId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'Countries',
+        referencedTableName: 'Prices',
         onDelete: 'CASCADE'
       })
     )
@@ -94,31 +82,31 @@ export class UserMigration20201212235632 implements MigrationInterface {
     await queryRunner.createForeignKey(
       this.tableName,
       new TableForeignKey({
-        columnNames: ['roleId'],
+        columnNames: ['categoryId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'Roles',
+        referencedTableName: 'Categories',
         onDelete: 'CASCADE'
       })
     )
 
     const [
-      country
+      price
     ]: Country[] = await queryRunner.query(
-      'SELECT * FROM "Countries" WHERE name = $1',
-      ['Ukraine']
+      'SELECT * FROM "Prices" WHERE value = $1',
+      [100]
     )
 
     const [
-      role
+      category
     ]: Role[] = await queryRunner.query(
-      'SELECT * FROM "Roles" WHERE name = $1',
-      ['Admin']
+      'SELECT * FROM "Categories" WHERE name = $1',
+      ['ProductSubCategory']
     )
 
     await queryRunner.query(
-      `INSERT INTO "Users" ("email", "username", "password", "birthDate", "avatar", "roleId", "countryId")
-      VALUES ($1, $2, $3, $4, $5, $6, $7);`,
-      ['admin@ad.min', 'admin', 'admin', new Date(), null, role.id, country.id]
+      `INSERT INTO "Products" ("name", "description", "rating", "priceId", "categoryId")
+      VALUES ($1, $2, $3, $4, $5);`,
+      ['test', 'test description', 4.5, price.id, category.id]
     )
   }
 

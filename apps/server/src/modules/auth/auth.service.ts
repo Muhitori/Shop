@@ -16,7 +16,7 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validate(email: string, pass: string): Promise<any> {
     const user: AuthUserDto = await this.usersService.getUserByEmail(email)
 
     if (!user) {
@@ -26,7 +26,7 @@ export class AuthService {
       })
     }
 
-    if (!this.passwordIsValid(user.password, pass)) {
+    if (!(user.password === pass)) {
       throw new UnauthorizedException({
         field: 'password',
         message: 'Wrong password'
@@ -39,7 +39,7 @@ export class AuthService {
   }
 
   async login(user: AuthUserDto) {
-    const validatedUser = await this.validateUser(user.email, user.password)
+    const validatedUser = await this.validate(user.email, user.password)
 
     const payload = {
       id: validatedUser.id
@@ -51,7 +51,7 @@ export class AuthService {
   }
 
   async register(user: RegisterUserDto) {
-    const registeredUser = await this.usersService.createUser(user)
+    const registeredUser = await this.usersService.create(user)
 
     if (!registeredUser) {
       throw new UnprocessableEntityException()

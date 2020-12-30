@@ -4,11 +4,10 @@ import {
   Table,
   TableForeignKey
 } from 'typeorm'
-import { User } from '../entities/User'
+import { Country } from '../../entities/country.entity'
 
-// eslint-disable-next-line prettier/prettier
-export class OrderedProductMigration20201219235639 implements MigrationInterface {
-  private tableName = 'OrderedProducts'
+export class UserMigration20201212235632 implements MigrationInterface {
+  private tableName = 'Users'
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -21,17 +20,38 @@ export class OrderedProductMigration20201219235639 implements MigrationInterface
             isPrimary: true
           },
           {
-            name: 'count',
-            type: 'int',
+            name: 'email',
+            type: 'varchar',
+            length: '255',
+            isUnique: true,
             isNullable: false
           },
           {
-            name: 'orderId',
-            type: 'uuid',
+            name: 'username',
+            type: 'varchar',
+            length: '255',
+            isUnique: true,
             isNullable: false
           },
           {
-            name: 'productId',
+            name: 'password',
+            type: 'varchar',
+            length: '255',
+            isNullable: false
+          },
+          {
+            name: 'birthDate',
+            type: 'timestamptz',
+            isNullable: false
+          },
+          {
+            name: 'avatar',
+            type: 'varchar',
+            length: '255',
+            isNullable: true
+          },
+          {
+            name: 'countryId',
             type: 'uuid',
             isNullable: false
           },
@@ -58,48 +78,23 @@ export class OrderedProductMigration20201219235639 implements MigrationInterface
     await queryRunner.createForeignKey(
       this.tableName,
       new TableForeignKey({
-        columnNames: ['orderId'],
+        columnNames: ['countryId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'Orders',
-        onDelete: 'CASCADE'
-      })
-    )
-
-    await queryRunner.createForeignKey(
-      this.tableName,
-      new TableForeignKey({
-        columnNames: ['productId'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'Products',
+        referencedTableName: 'Countries',
         onDelete: 'CASCADE'
       })
     )
 
     const [
-      user
-    ]: User[] = await queryRunner.query(
-      'SELECT * FROM "Users" WHERE username = $1',
-      ['admin']
+      country
+    ]: Country[] = await queryRunner.query(
+      'SELECT * FROM "Countries" WHERE name = $1',
+      ['Ukraine']
     )
-
-    const [
-      order
-    ]: User[] = await queryRunner.query(
-      'SELECT * FROM "Orders" WHERE "userId" = $1',
-      [user.id]
-    )
-
-    const [
-      product
-    ]: User[] = await queryRunner.query(
-      'SELECT * FROM "Products" WHERE name = $1',
-      ['test']
-    )
-
     await queryRunner.query(
-      `INSERT INTO "OrderedProducts" ("id", "count", "orderId", "productId")
-      VALUES (DEFAULT, $1, $2, $3);`,
-      [2, order.id, product.id]
+      `INSERT INTO "Users" ("email", "username", "password", "birthDate", "avatar", "countryId")
+      VALUES ($1, $2, $3, $4, $5, $6);`,
+      ['admin@ad.min', 'admin', 'admin', new Date(), null, country.id]
     )
   }
 

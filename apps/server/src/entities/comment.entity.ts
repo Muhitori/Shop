@@ -3,20 +3,26 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import { OrderedProduct } from './OrderedProduct'
-import { Product } from './Product'
-import { User } from './User'
+import { Product } from './product.entity'
+import { User } from './user.entity'
 
-@Entity('Orders')
-export class Order {
+@Entity('Comments')
+export class Comment {
   @PrimaryGeneratedColumn('uuid')
   public id: string
+
+  @Column('varchar')
+  public text: string
+
+  @Column('int')
+  public rating: string
+
+  @Column('uuid')
+  public productId: string
 
   @Column('uuid')
   public userId: string
@@ -30,12 +36,9 @@ export class Order {
   @DeleteDateColumn({ type: 'timestamp with time zone' })
   public deletedAt: Date
 
-  @OneToMany(() => OrderedProduct, (orderedProduct) => orderedProduct.order)
-  public orderedProducts: OrderedProduct[]
-
-  @ManyToOne(() => User, (user) => user.orders)
+  @ManyToOne(() => User, (user) => user.comments)
   public user: User
 
-  @ManyToMany(() => Product, (product) => product.orders)
-  public products: Product[]
+  @ManyToOne(() => Product, (product) => product.comments)
+  public product: Product
 }

@@ -1,22 +1,28 @@
 import {
+  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  UpdateDateColumn,
   DeleteDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
+  ManyToOne,
+  Entity
 } from 'typeorm'
-import { Price } from './Price'
-import { User } from './User'
+import { User } from './user.entity'
+import { Role } from './role.entity'
 
-@Entity('Countries')
-export class Country {
+@Entity('Permissions')
+export class Permission {
   @PrimaryGeneratedColumn('uuid')
   public id: string
 
   @Column('varchar')
   public name: string
+
+  @Column('uuid')
+  public userId: string
+
+  @Column('uuid')
+  public roleId: string
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
   public createdAt: Date
@@ -27,9 +33,9 @@ export class Country {
   @DeleteDateColumn({ type: 'timestamp with time zone' })
   public deletedAt: Date
 
-  @OneToMany(() => User, (user) => user.country)
-  public users: User[]
+  @ManyToOne(() => User, (user) => user.permissions)
+  public user: User
 
-  @OneToMany(() => Price, (price) => price.country)
-  public price: Price
+  @ManyToOne(() => Role, (role) => role.permissions)
+  public role: Role
 }

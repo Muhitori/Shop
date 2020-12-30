@@ -8,18 +8,25 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import { Product } from './Product'
+import { Country } from './country.entity'
+import { Product } from './product.entity'
 
-@Entity('Categories')
-export class Category {
+@Entity('Prices')
+export class Price {
   @PrimaryGeneratedColumn('uuid')
   public id: string
 
+  @Column('double precision')
+  public value: number
+
+  @Column('int')
+  public discount: number
+
   @Column('varchar')
-  public name: string
+  public currency: string
 
   @Column('uuid')
-  public parentCategoryId: string
+  public countryId: string
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
   public createdAt: Date
@@ -30,20 +37,9 @@ export class Category {
   @DeleteDateColumn({ type: 'timestamp with time zone' })
   public deletedAt: Date
 
-  @ManyToOne(() => Category, (category) => category.parent)
-  public parent: Category
+  @ManyToOne(() => Country, (country) => country.price)
+  public country: Country
 
-  @OneToMany(() => Category, (category) => category.heirs)
-  public heirs: Category[]
-
-  @OneToMany(() => Product, (product) => product.category)
+  @OneToMany(() => Product, (product) => product.price)
   public products: Product[]
-
-  public hasChild(): boolean {
-    return this.heirs.length > 0
-  }
-
-  public hasParent(): boolean {
-    return !!this.parentCategoryId
-  }
 }

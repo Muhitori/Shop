@@ -3,22 +3,21 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  ManyToOne,
+  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import { Product } from './Product'
+import { Permission } from './permission.entity'
+import { User } from './user.entity'
 
-@Entity('Images')
-export class Image {
+@Entity('Roles')
+export class Role {
   @PrimaryGeneratedColumn('uuid')
   public id: string
 
   @Column('varchar')
-  public url: string
-
-  @Column('uuid')
-  public productId: string
+  public name: string
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
   public createdAt: Date
@@ -29,6 +28,9 @@ export class Image {
   @DeleteDateColumn({ type: 'timestamp with time zone' })
   public deletedAt: Date
 
-  @ManyToOne(() => Product, (product) => product.images)
-  public product: Product
+  @ManyToMany(() => User, (user) => user.roles)
+  public users: User[]
+
+  @OneToMany(() => Permission, (permission) => permission.role)
+  public permissions: Permission[]
 }

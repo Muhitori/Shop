@@ -4,10 +4,10 @@ import {
   Table,
   TableForeignKey
 } from 'typeorm'
-import { User } from '../entities/User'
+import { Country } from '../../entities/country.entity'
 
-export class OrderMigration20201218235638 implements MigrationInterface {
-  private tableName = 'Orders'
+export class PriceMigration20201215235634 implements MigrationInterface {
+  private tableName = 'Prices'
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -20,7 +20,23 @@ export class OrderMigration20201218235638 implements MigrationInterface {
             isPrimary: true
           },
           {
-            name: 'userId',
+            name: 'value',
+            type: 'double precision',
+            isNullable: false
+          },
+          {
+            name: 'discount',
+            type: 'int',
+            isNullable: true
+          },
+          {
+            name: 'currency',
+            type: 'varchar',
+            length: '255',
+            isNullable: false
+          },
+          {
+            name: 'countryId',
             type: 'uuid',
             isNullable: false
           },
@@ -47,23 +63,23 @@ export class OrderMigration20201218235638 implements MigrationInterface {
     await queryRunner.createForeignKey(
       this.tableName,
       new TableForeignKey({
-        columnNames: ['userId'],
+        columnNames: ['countryId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'Users',
+        referencedTableName: 'Countries',
         onDelete: 'CASCADE'
       })
     )
 
     const [
       { id }
-    ]: User[] = await queryRunner.query(
-      'SELECT id FROM "Users" WHERE username = $1',
-      ['admin']
+    ]: Country[] = await queryRunner.query(
+      'SELECT id FROM "Countries" WHERE name = $1',
+      ['Ukraine']
     )
 
     await queryRunner.query(
-      'INSERT INTO "Orders" ("id", "userId") VALUES (DEFAULT, $1);',
-      [id]
+      'INSERT INTO "Prices"("id", "value", "discount", "currency", "countryId") VALUES (DEFAULT, $1, $2, $3, $4);',
+      [100, 0, 'Dollar', id]
     )
   }
 

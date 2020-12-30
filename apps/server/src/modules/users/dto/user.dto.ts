@@ -1,4 +1,5 @@
 import { CountryDto } from '../../countries/country.dto'
+import { PermissionDto } from '../../permissions/permission.dto'
 import { RoleDto } from '../../roles/roles.dto'
 
 export class UserDto {
@@ -14,7 +15,9 @@ export class UserDto {
 
   public avatar: string
 
-  public role: RoleDto
-
   public country: CountryDto
+
+  public permissions: PermissionDto[]
+
+  public roles: RoleDto[]
 }

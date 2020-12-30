@@ -4,11 +4,10 @@ import {
   Table,
   TableForeignKey
 } from 'typeorm'
-import { Country } from '../entities/Country'
-import { Role } from '../entities/Role'
+import { Product } from '../../entities/product.entity'
 
-export class CommentMigration20201217235637 implements MigrationInterface {
-  private tableName = 'Comments'
+export class ImageMigration20201217235636 implements MigrationInterface {
+  private tableName = 'Images'
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -21,24 +20,13 @@ export class CommentMigration20201217235637 implements MigrationInterface {
             isPrimary: true
           },
           {
-            name: 'text',
+            name: 'url',
             type: 'varchar',
             length: '255',
-            isUnique: true,
-            isNullable: false
-          },
-          {
-            name: 'rating',
-            type: 'int',
             isNullable: false
           },
           {
             name: 'productId',
-            type: 'uuid',
-            isNullable: false
-          },
-          {
-            name: 'userId',
             type: 'uuid',
             isNullable: false
           },
@@ -72,34 +60,19 @@ export class CommentMigration20201217235637 implements MigrationInterface {
       })
     )
 
-    await queryRunner.createForeignKey(
-      this.tableName,
-      new TableForeignKey({
-        columnNames: ['userId'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'Users',
-        onDelete: 'CASCADE'
-      })
-    )
-
     const [
-      product
-    ]: Role[] = await queryRunner.query(
-      'SELECT * FROM "Products" WHERE name = $1',
+      { id }
+    ]: Product[] = await queryRunner.query(
+      'SELECT id FROM "Products" WHERE name = $1',
       ['test']
     )
 
-    const [
-      user
-    ]: Country[] = await queryRunner.query(
-      'SELECT * FROM "Users" WHERE username = $1',
-      ['admin']
-    )
-
     await queryRunner.query(
-      `INSERT INTO "Comments" ("text", "rating", "productId", "userId")
-      VALUES ($1, $2, $3, $4);`,
-      ['test comment', 4, product.id, user.id]
+      'INSERT INTO "Images"("id", "url", "productId") VALUES (DEFAULT, $1, $2);',
+      [
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNGYBq9sbINiYagdSRKn4wQVufUF-7FbllYA&usqp=CAU',
+        id
+      ]
     )
   }
 

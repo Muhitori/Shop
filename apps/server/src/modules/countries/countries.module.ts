@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { Country } from '../../entities/Country'
+import { Country } from '../../entities/country.entity'
 import { CountriesService } from './countries.service'
 
 @Module({

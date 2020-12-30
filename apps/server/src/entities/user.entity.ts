@@ -1,17 +1,22 @@
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import { Country } from './Country'
-import { Role } from './Role'
-import { Order } from './Order'
-import { Comment } from './Comment'
+import * as bcrypt from 'bcryptjs'
+import { Country } from './country.entity'
+import { Role } from './role.entity'
+import { Order } from './order.entity'
+import { Comment } from './comment.entity'
+import { Permission } from './permission.entity'
 
 @Entity('Users')
 export class User {
@@ -34,9 +39,6 @@ export class User {
   public avatar: string
 
   @Column('uuid')
-  public roleId: string
-
-  @Column('uuid')
   public countryId: string
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
@@ -51,28 +53,39 @@ export class User {
   @ManyToOne(() => Country, (country) => country.users)
   public country: Country
 
-  @ManyToOne(() => Role, (role) => role.users)
-  public role: Role
-
   @OneToMany(() => Order, (order) => order.user)
   public orders: Order[]
 
   @OneToMany(() => Comment, (comment) => comment.user)
   public comments: Comment[]
 
+  @OneToMany(() => Permission, (permission) => permission.user)
+  public permissions: Permission[]
+
+  @ManyToMany(() => Role, (role) => role.users)
+  @JoinTable({
+    name: 'Permissions',
+    joinColumns: [{ name: 'userId' }],
+    inverseJoinColumns: [{ name: 'roleId' }]
+  })
+  public roles: Role[]
+
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = bcrypt.hashSync(this.password, 2)
+  }
+
   constructor(
     email: string,
     username: string,
     password: string,
     birthDate: Date,
-    countryId: string,
-    roleId: string
+    countryId: string
   ) {
     this.email = email
     this.username = username
     this.password = password
     this.birthDate = birthDate
     this.countryId = countryId
-    this.roleId = roleId
   }
 }

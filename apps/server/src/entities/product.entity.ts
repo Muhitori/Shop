@@ -9,12 +9,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import { Category } from './Category'
-import { Image } from './Image'
-import { Order } from './Order'
-import { OrderedProduct } from './OrderedProduct'
-import { Price } from './Price'
-import { Comment } from './Comment'
+import { Category } from './category.entity'
+import { Image } from './image.entity'
+import { Order } from './order.entity'
+import { OrderedProduct } from './orderedProduct.entity'
+import { Price } from './price.entity'
+import { Comment } from './comment.entity'
 
 @Entity('Products')
 export class Product {

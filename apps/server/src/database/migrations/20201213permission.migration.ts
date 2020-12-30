@@ -4,10 +4,10 @@ import {
   Table,
   TableForeignKey
 } from 'typeorm'
-import { Product } from '../entities/Product'
-
-export class ImageMigration20201216235636 implements MigrationInterface {
-  private tableName = 'Images'
+import { Role } from '../../entities/role.entity'
+import { User } from '../../entities/user.entity'
+export class PermissionMigration20201213235630 implements MigrationInterface {
+  private tableName = 'Permissions'
   async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -20,13 +20,18 @@ export class ImageMigration20201216235636 implements MigrationInterface {
             isPrimary: true
           },
           {
-            name: 'url',
+            name: 'name',
             type: 'varchar',
             length: '255',
             isNullable: false
           },
           {
-            name: 'productId',
+            name: 'userId',
+            type: 'uuid',
+            isNullable: false
+          },
+          {
+            name: 'roleId',
             type: 'uuid',
             isNullable: false
           },
@@ -53,25 +58,51 @@ export class ImageMigration20201216235636 implements MigrationInterface {
     await queryRunner.createForeignKey(
       this.tableName,
       new TableForeignKey({
-        columnNames: ['productId'],
+        columnNames: ['userId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'Products',
+        referencedTableName: 'Users',
         onDelete: 'CASCADE'
       })
     )
 
+    await queryRunner.createForeignKey(
+      this.tableName,
+      new TableForeignKey({
+        columnNames: ['roleId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'Roles',
+        onDelete: 'CASCADE'
+      })
+    )
+
+    const roles: Role[] = await queryRunner.query('SELECT * FROM "Roles"')
+
     const [
       { id }
-    ]: Product[] = await queryRunner.query(
-      'SELECT id FROM "Products" WHERE name = $1',
-      ['test']
+    ]: User[] = await queryRunner.query(
+      'SELECT id FROM "Users" WHERE username = $1',
+      ['admin']
     )
 
     await queryRunner.query(
-      'INSERT INTO "Images"("id", "url", "productId") VALUES (DEFAULT, $1, $2);',
+      `INSERT INTO "Permissions"("id", "name", "userId", "roleId") VALUES
+      (DEFAULT, $1, $2, $3),
+      (DEFAULT, $4, $5, $6),
+      (DEFAULT, $7, $8, $9),
+      (DEFAULT, $10, $11, $12);`,
       [
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNGYBq9sbINiYagdSRKn4wQVufUF-7FbllYA&usqp=CAU',
-        id
+        'GODLY PERMISSIONS',
+        id,
+        roles[0].id,
+        'SELLER PERMISSIONS',
+        id,
+        roles[1].id,
+        'USER PERMISSIONS',
+        id,
+        roles[2].id,
+        'NO PERMISSIONS',
+        id,
+        roles[3].id
       ]
     )
   }
