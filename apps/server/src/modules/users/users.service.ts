@@ -29,11 +29,32 @@ export class UsersService {
     })
   }
 
-  async findOneByEmail(email: string): Promise<AuthUserDto | null> {
-    return this.userRepo.findOne({ email })
+  async getUserById(id: string): Promise<UserDto | null> {
+    return this.userRepo.findOne({
+      where: { id },
+      join: {
+        alias: 'users',
+        leftJoinAndSelect: {
+          role: 'users.role',
+          country: 'users.country'
+        }
+      }
+    })
   }
 
-  async createUser(user: RegisterUserDto): Promise<UserDto | null> {
+  async getUserByEmail(email: string): Promise<AuthUserDto | null> {
+    return this.userRepo.findOne({
+      where: { email },
+      join: {
+        alias: 'users',
+        leftJoinAndSelect: {
+          role: 'users.role'
+        }
+      }
+    })
+  }
+
+  async createUser(user: RegisterUserDto): Promise<AuthUserDto | null> {
     const country = await this.countriesService.getCountryByName(
       user.countryName
     )
@@ -51,7 +72,7 @@ export class UsersService {
 
     await this.userRepo.insert(newUser)
 
-    return newUser
+    return this.getUserByEmail(user.email)
   }
 
   hashPassword(password: string) {

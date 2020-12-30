@@ -1,3 +1,5 @@
+import { RoleDto } from '../../roles/roles.dto'
+
 export class RegisterUserDto {
   public email: string
 
@@ -8,4 +10,6 @@ export class RegisterUserDto {
   public birthDate: Date
 
   public countryName: string
+
+  public role: RoleDto
 }

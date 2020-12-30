@@ -17,7 +17,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
-    const user: AuthUserDto = await this.usersService.findOneByEmail(email)
+    const user: AuthUserDto = await this.usersService.getUserByEmail(email)
 
     if (!user) {
       throw new UnauthorizedException({
@@ -40,7 +40,10 @@ export class AuthService {
 
   async login(user: AuthUserDto) {
     const validatedUser = await this.validateUser(user.email, user.password)
-    const payload = { id: validatedUser.id, email: validatedUser.email }
+
+    const payload = {
+      id: validatedUser.id
+    }
 
     return {
       token: this.jwtService.sign(payload)
@@ -55,8 +58,7 @@ export class AuthService {
     }
 
     const payload = {
-      id: registeredUser.id,
-      username: registeredUser.username
+      id: registeredUser.id
     }
 
     return {
@@ -64,7 +66,7 @@ export class AuthService {
     }
   }
 
-  passwordIsValid(externalPassword: string, password: string) {
+  private passwordIsValid(externalPassword: string, password: string) {
     return bcrypt.compareSync(password, externalPassword)
   }
 }

@@ -22,4 +22,8 @@ export class RolesService {
   async getRoleByName(name: string): Promise<RoleDto | null> {
     return this.roleRepo.findOne({ name })
   }
+
+  async getRoleById(id: string): Promise<RoleDto | null> {
+    return this.roleRepo.findOne(id)
+  }
 }

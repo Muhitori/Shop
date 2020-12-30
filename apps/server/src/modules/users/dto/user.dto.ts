@@ -1,3 +1,6 @@
+import { CountryDto } from '../../countries/country.dto'
+import { RoleDto } from '../../roles/roles.dto'
+
 export class UserDto {
   public id: string
 
@@ -10,4 +13,8 @@ export class UserDto {
   public birthDate: Date
 
   public avatar: string
+
+  public role: RoleDto
+
+  public country: CountryDto
 }
